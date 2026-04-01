@@ -1,0 +1,31 @@
+# Common
+.git
+.github
+.gitignore
+.dockerignore
+README.md
+*.md
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+# .env
+.venv
+venv/
+ENV/
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.env.example
+
+# Docker
+Dockerfile*
+docker-compose*
+
+# node
+node_modules/
