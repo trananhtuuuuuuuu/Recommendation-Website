@@ -1,0 +1,18 @@
+services:
+  client:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.client
+    container_name: datn-frontend
+    ports:
+      - "3001:3000"
+    volumes:
+      - ../client:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+networks:
+  local-network-datn:
+    name: local-network-datn
+    driver: bridge
