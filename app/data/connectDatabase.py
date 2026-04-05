@@ -1,13 +1,13 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+# from sqlalchemy import create_engine
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL_EXAMPLE = 'postgresql://<username>:<password>@<ip-address/hostname>/<database_name>'
+# SQLALCHEMY_DATABASE_URL_EXAMPLE = 'postgresql://<username>:<password>@<ip-address/hostname>/<database_name>'
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:123456@localhost/rw-db'
+# SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:123456@localhost/rw-db'
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+# Base = declarative_base()
