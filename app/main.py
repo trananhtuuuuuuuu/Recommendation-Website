@@ -1,26 +1,18 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-import psycopg2
-from psycopg2.extras import RealDictCursor
+from app.lifespan import lifespan
+from app.routes.api import api_router
 
-app = FastAPI()
+def create_application() -> FastAPI:
+    """Factory function to initialize the FastAPI app."""
+    application = FastAPI(
+        title="Recommenddation Weisite init",
+        version="1.0.0",
+        lifespan=lifespan
+    )
 
-try:
-  conn = psycopg2.connect(host="localhost", port=8386, database="rw-db", user="postgres", password="123456", cursor_factory=RealDictCursor)
-  cursor = conn.cursor()
-  print(f"Database connection successful")
-except Exception as error:
-  print(f"Database connection failed")
+    # Include your routes
+    application.include_router(api_router, prefix="/api/v1")
 
+    return application
 
-class Item(BaseModel):
-  name: str
-  description: str | None = None
-  price: float
-  tax: float | None = None
-
-
-@app.post("/items")
-async def create_item(item: Item):
-  return item
-
+app = create_application()
