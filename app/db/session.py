@@ -8,3 +8,10 @@ DATABASE_URL = "postgresql://postgres:123456@localhost:8386/rw-db"
 engine = create_engine(DATABASE_URL, echo=True)
 
 SessionLocal = sessionmaker(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

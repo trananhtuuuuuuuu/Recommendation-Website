@@ -14,7 +14,7 @@ class Applicant(Base):
     full_name = Column(String)
     data_of_birth = Column(Date, nullable=True)
 
-    cv_id = Column(Integer, ForeignKey("cv.id"))
+    cv_id = Column(Integer, ForeignKey("cv.id"), nullable=True)
 
     user = relationship("User", back_populates="applicant")
     cv = relationship("Cv", back_populates="applicant")

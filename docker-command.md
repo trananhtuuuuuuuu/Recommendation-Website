@@ -6,7 +6,7 @@ docker run -d \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=123456 \
   -p 8386:5432 \
-  -v $(pwd)/pgdata:/var/lib/postgresql/data \
+  -v /home/anhtu/DATN/app/pgdata:/var/lib/postgresql/data \
   postgres:16
 ```
 
