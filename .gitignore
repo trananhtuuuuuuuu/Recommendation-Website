@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.coverage
+coverage.xml
+htmlcov/
+*.log
+*.sqlite3
+.venv/
+venv/
+env/
+ENV/
+*.env
+.env.*
+
+# Node / Vite / Bun
+node_modules/
+dist/
+build/
+.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+bun-debug.log*
+
+# Playwright
+playwright-report/
+test-results/
+
+# IDE / OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+.DS_Store
+
+# Local data
+app/pgdata/
+*.pid
+*.pid.lock
