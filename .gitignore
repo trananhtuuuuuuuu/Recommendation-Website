@@ -4,6 +4,10 @@ __pycache__/
 *.so
 *.egg-info/
 .eggs/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 build/
 dist/
 .pytest_cache/
@@ -50,3 +54,6 @@ test-results/
 app/pgdata/
 *.pid
 *.pid.lock
+
+# PostgreSQL data directory
+app/pgdata/
