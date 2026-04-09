@@ -11,7 +11,6 @@ from app.core.uow import UnitOfWork
 from app.mappers.mapper_applicant import MapperApplicant
 from app.schemas.request.user.applicant.applicant_login_request import applicant_login_request
 from app.schemas.request.user.applicant.applicant_registration_request import applicant_registration_request
-from app.schemas.request.user.applicant.applicant_refresh_token_request import applicant_refresh_token_request
 from app.schemas.response.user_login_response import user_login_response
 
 class ApplicantService:
@@ -36,6 +35,7 @@ class ApplicantService:
         return MapperApplicant.map_entity_to_response(entity)
 
     async def login_applicant(self, request: applicant_login_request) -> user_login_response:
+        
         user = await self.uow.users.get_by_email_or_username(request.identifier)
         if user is None or not verify_password(request.password, user.password):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
@@ -60,9 +60,9 @@ class ApplicantService:
             refresh_token=refresh_token,
         )
 
-    async def refresh_applicant_token(self, request: applicant_refresh_token_request) -> user_login_response:
+    async def refresh_applicant_token(self, refresh_token: str) -> user_login_response:
         try:
-            payload = decode_refresh_token(request.refresh_token)
+            payload = decode_refresh_token(refresh_token)
             if payload.get("type") != "refresh":
                 raise ValueError("Invalid token type")
             user_id = int(payload.get("sub"))
@@ -70,7 +70,7 @@ class ApplicantService:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token") from exc
 
         user = await self.uow.users.get_by_id(user_id)
-        if user is None or user.refresh_token != request.refresh_token:
+        if user is None or user.refresh_token != refresh_token:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token is not recognized")
 
         new_access_token = create_access_token(subject=str(user.id), additional_claims={"email": user.email})
@@ -88,3 +88,15 @@ class ApplicantService:
             access_token=new_access_token,
             refresh_token=new_refresh_token,
         )
+
+    async def logout_applicant(self, refresh_token: str) -> None:
+        if not refresh_token:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing refresh token")
+
+        user = await self.uow.users.get_by_refresh_token(refresh_token)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Session not found")
+
+        async with self.uow:
+            await self.uow.users.clear_tokens(user.id)
+            await self.uow.commit()

@@ -59,22 +59,23 @@ def test_applicant_login_and_refresh_flow():
             json={"identifier": "auth.applicant@example.com", "password": "AuthPass123"},
         )
         assert login_response.status_code == 200
+        assert "refresh_token=" in login_response.headers.get("set-cookie", "")
 
         login_body = login_response.json()
         assert "access_token" in login_body
         assert "refresh_token" in login_body
         assert login_body["token_type"] == "bearer"
 
-        refresh_response = client.post(
-            "/applicants/refresh-token",
-            json={"refresh_token": login_body["refresh_token"]},
-        )
+        refresh_response = client.post("/applicants/refresh-token")
         assert refresh_response.status_code == 200
 
         refresh_body = refresh_response.json()
         assert "access_token" in refresh_body
         assert "refresh_token" in refresh_body
         assert refresh_body["token_type"] == "bearer"
+
+        logout_response = client.post("/applicants/logout")
+        assert logout_response.status_code == 204
     finally:
         _cleanup(db, engine)
 
@@ -103,5 +104,14 @@ def test_applicant_login_invalid_password_returns_401():
         )
 
         assert login_response.status_code == 401
+    finally:
+        _cleanup(db, engine)
+
+
+def test_refresh_token_missing_returns_401():
+    client, db, engine = _build_test_client()
+    try:
+        refresh_response = client.post("/applicants/refresh-token")
+        assert refresh_response.status_code == 401
     finally:
         _cleanup(db, engine)

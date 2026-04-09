@@ -21,11 +21,23 @@ class UserRepository:
     async def get_by_id(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()
 
+    async def get_by_refresh_token(self, refresh_token: str):
+        return self.db.query(User).filter(User.refresh_token == refresh_token).first()
+
     async def update_tokens(self, user_id: int, access_token: str, refresh_token: str):
         user = await self.get_by_id(user_id)
         if user is None:
             return None
         user.access_token = access_token
         user.refresh_token = refresh_token
+        self.db.flush()
+        return user
+
+    async def clear_tokens(self, user_id: int):
+        user = await self.get_by_id(user_id)
+        if user is None:
+            return None
+        user.access_token = None
+        user.refresh_token = None
         self.db.flush()
         return user
