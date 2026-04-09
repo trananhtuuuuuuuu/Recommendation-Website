@@ -9,5 +9,5 @@ class UnauthorizedException(BaseAPIException):
         super().__init__(message, status_code=401, error_code="UNAUTHORIZED")
 
 class DuplicateResourceException(BaseAPIException):
-  def __init__(self, message: str = "Duplicate resources"):
-    super().__init__(message, error_code="Invalid resoures")
+  def __init__(self, message: str = "Duplicate resources", status_code: int = 409):
+    super().__init__(message, status_code=status_code, error_code="DUPLICATE_RESOURCE")

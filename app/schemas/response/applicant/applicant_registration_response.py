@@ -1,6 +1,6 @@
 from typing import Optional
 from app.models.enums import ApplicantStatus, GenderEnum
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class applicant_registration_response(BaseModel):
@@ -13,5 +13,4 @@ class applicant_registration_response(BaseModel):
     date_of_birth: str
     applicant_status: ApplicantStatus
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -2,12 +2,12 @@ from .base import BaseAPIException
 from .business import (
   NotFoundException,
   UnauthorizedException,
-  DuplicateResourcesException
+  DuplicateResourceException
 )
 
 __all__ = [
   "BaseAPIException",
   "NotFoundException",
   "UnauthorizedException",
-  "DuplicateResourcesException"
+  "DuplicateResourceException"
 ]

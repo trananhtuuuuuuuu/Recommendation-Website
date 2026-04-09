@@ -7,6 +7,9 @@ class ApplicantRepository:
     def __init__(self, applicant_repository: Session):
         self.applicant_repository = applicant_repository
 
+    def add(self, entity: Applicant):
+        self.applicant_repository.add(entity)
+
     async def get_by_email_or_username(self, email: str, username: str):
         # Logic move here from the service
         return self.applicant_repository.query(User).filter(

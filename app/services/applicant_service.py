@@ -1,13 +1,13 @@
 from app.core.exceptions.business import DuplicateResourceException
 from app.core.uow import UnitOfWork
 from app.mappers.mapper_applicant import MapperApplicant
-from app.schemas.request.user.applicant.applicant_registration_request import ApplicantRegistrationRequest
+from app.schemas.request.user.applicant.applicant_registration_request import applicant_registration_request
 
 class ApplicantService:
     def __init__(self, uow: UnitOfWork):
         self.uow = uow
 
-    async def create_applicant(self, request: ApplicantRegistrationRequest):
+    async def create_applicant(self, request: applicant_registration_request):
         # 1. Use the UoW to check for existing users
         existing = await self.uow.users.get_by_email(request.email)
         
