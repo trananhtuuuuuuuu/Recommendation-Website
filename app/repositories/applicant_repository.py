@@ -16,6 +16,13 @@ class ApplicantRepository:
             or_(User.email == email, User.user_name == username)
         ).first()
 
+    async def get_by_user_id(self, user_id: int):
+        return (
+            self.applicant_repository.query(Applicant)
+            .filter(Applicant.id == user_id)
+            .first()
+        )
+
     async def save(self, entity: Applicant):
         try:
             self.applicant_repository.add(entity)

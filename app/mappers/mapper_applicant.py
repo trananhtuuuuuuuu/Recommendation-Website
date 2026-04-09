@@ -1,4 +1,5 @@
 from datetime import datetime
+from app.core.security import hash_password
 from app.models.user import User
 from app.models.applicant import Applicant
 from app.schemas.request.user.applicant.applicant_registration_request import applicant_registration_request
@@ -6,6 +7,10 @@ from app.schemas.response.applicant.applicant_registration_response import appli
 
 
 class MapperApplicant:
+
+    @staticmethod
+    def hash_password(plain_password: str) -> str:
+        return hash_password(plain_password)
     
     @staticmethod
     def map_request_to_entity(request: applicant_registration_request) -> Applicant:
@@ -18,7 +23,7 @@ class MapperApplicant:
             phone_number=request.phone_number,
             email=request.email,
             user_name=request.user_name,
-            password=request.password,  # Note: In a real app, hash this first!
+            password=MapperApplicant.hash_password(request.password),
         )
 
         # 2. Create the Applicant portion and link the user
