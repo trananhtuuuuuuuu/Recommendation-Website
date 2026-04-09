@@ -4,16 +4,12 @@ from app.schemas.request.user.applicant.applicant_registration_request import ap
 from app.schemas.request.user.applicant.applicant_refresh_token_request import applicant_refresh_token_request
 from app.schemas.response.applicant.applicant_registration_response import applicant_registration_response
 from app.schemas.response.user_login_response import user_login_response
+from app.core.provider import get_applicant_service
 from app.services.applicant_service import ApplicantService
-from app.core.provider import InternalProvider # Assuming this is your provider path
 
 router = APIRouter(prefix="/applicants", tags=["Applicants"])
 
 
-def get_applicant_service(
-    provider: InternalProvider = Depends(InternalProvider),
-) -> ApplicantService:
-    return provider.get_applicant_service()
 
 @router.post(
     "/register", 

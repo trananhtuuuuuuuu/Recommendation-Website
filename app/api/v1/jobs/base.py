@@ -1,14 +1,10 @@
 from fastapi import APIRouter, Depends
 
-from app.core.provider import InternalProvider
+from app.core.provider import get_job_service
 from app.schemas.response.job_response import JobResponse
 from app.services.job_service import JobService
 
 router = APIRouter(prefix="/api/v1/jobs", tags=["Jobs"])
-
-
-def get_job_service(provider: InternalProvider = Depends(InternalProvider)) -> JobService:
-    return provider.get_job_service()
 
 
 @router.get("", response_model=list[JobResponse])

@@ -34,3 +34,19 @@ class InternalProvider:
 
     def get_job_service(self) -> JobService:
         return JobService(job_repository=self.get_job_repository())
+
+
+def get_internal_provider(db: Session = Depends(get_db)) -> InternalProvider:
+    return InternalProvider(db)
+
+
+def get_applicant_service(
+    provider: InternalProvider = Depends(get_internal_provider),
+) -> ApplicantService:
+    return provider.get_applicant_service()
+
+
+def get_job_service(
+    provider: InternalProvider = Depends(get_internal_provider),
+) -> JobService:
+    return provider.get_job_service()
