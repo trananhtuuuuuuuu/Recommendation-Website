@@ -1,5 +1,3 @@
-from fastapi import APIRouter
+"""Applicants API package exports the applicants router from base."""
 
-
-router = APIRouter()
-router.include_router()
+from .base import router  # re-export router for app include

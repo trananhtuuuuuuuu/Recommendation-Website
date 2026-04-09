@@ -44,6 +44,8 @@ test-results/
 
 # IDE / OS
 .vscode/*
+.agents/*
+.serena/*
 !.vscode/extensions.json
 !.vscode/settings.json
 !.vscode/launch.json

@@ -1,47 +1,25 @@
-from sqlalchemy.orm import Session
-from passlib.context import CryptContext
-from app.models.user import User
-#from app.core.exceptions import BusinessException # Your global exception
+from app.core.exceptions.business import DuplicateResourceException
+from app.core.uow import UnitOfWork
 from app.mappers.mapper_applicant import MapperApplicant
-from app.schemas.request.user.applicant import applicant_registration_request
-
-# Password hashing configuration
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from app.schemas.request.user.applicant.applicant_registration_request import ApplicantRegistrationRequest
 
 class ApplicantService:
-    @staticmethod
-    def create_applicant(db: Session, request: applicant_registration_request):
-      # 1. Business Logic: Check for duplicate User/Email
-      existing_user = db.query(User).filter(
-          (User.email == request.email) | (User.user_name == request.user_name)
-      ).first()
-      
-      # if existing_user:
-      #     # This triggers the Global Exception Handler automatically
-      #     raise BusinessException(
-      #         message="User with this email or username already exists", 
-      #         status_code=409,
-      #         error_code="DUPLICATE_USER"
-      #     )
+    def __init__(self, uow: UnitOfWork):
+        self.uow = uow
 
-      # 2. Security: Hash the password before it touches the entity
-      hashed_password = pwd_context.hash(request.password[:72])
-
-      # 3. Use Mapper to convert Request -> Entity
-      applicant_entity = MapperApplicant.map_request_to_entity(request)
+    async def create_applicant(self, request: ApplicantRegistrationRequest):
+        # 1. Use the UoW to check for existing users
+        existing = await self.uow.users.get_by_email(request.email)
         
-      # 4. Overwrite plain password with the secure hash
-      applicant_entity.user.password = hashed_password
-
-      # 5. Database Persistence with safe transaction handling
-      try:
-        db.add(applicant_entity)
-        db.flush()
-        db.commit()
-        db.refresh(applicant_entity)
-      except Exception as e:
-        db.rollback() # Important: Prevent partial saves if DB crashes
-            #raise BusinessException(message="Internal Database Error", status_code=500)
-
-        # 6. Use Mapper to convert Entity -> Response
-      return MapperApplicant.map_entity_to_response(applicant_entity)
+        if existing:
+            raise DuplicateResourceException("Email already in use", status_code=409)
+          
+        # 2. Logic & Mapping
+        entity = MapperApplicant.map_request_to_entity(request)
+        
+        # 3. Save via UoW (Transaction management)
+        async with self.uow:
+            self.uow.applicants.add(entity)
+            await self.uow.commit()
+        
+        return MapperApplicant.map_entity_to_response(entity)

@@ -1,8 +1,7 @@
-# app/main.py
 from fastapi import FastAPI
-from app.api.v1.applicants.applicant_endpoint import applicant_endpoint
+from app.api.v1.applicants.base import router as applicants_router
 
 app = FastAPI(title="Recommendation Website Apis service")
 
-
-app.include_router(applicant_endpoint.router, prefix="/applicants",tags=["Applicants"])
+# Include applicants router (contains /register endpoint)
+app.include_router(applicants_router)
